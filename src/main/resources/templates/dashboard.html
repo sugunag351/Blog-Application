@@ -1,0 +1,716 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <title>My Blog Application</title>-->
+<!--  <style>-->
+<!--      body {-->
+<!--    font-family: Arial, sans-serif;-->
+<!--    margin: 0;-->
+<!--    padding: 0;-->
+<!--    background: #f8f8f8;-->
+<!--}-->
+
+<!--/* Header */-->
+<!--.header {-->
+<!--    padding: 20px 40px;-->
+<!--    background: #ffffff;-->
+<!--    border-bottom: 1px solid #ddd;-->
+<!--}-->
+
+<!--.header-top {-->
+<!--    display: flex;-->
+<!--    justify-content: space-between;-->
+<!--    align-items: center;-->
+<!--}-->
+
+<!--.header h1 {-->
+<!--    margin: 0;-->
+<!--}-->
+
+<!--.search-login {-->
+<!--    display: flex;-->
+<!--    align-items: center;-->
+<!--    gap: 15px;-->
+<!--}-->
+
+<!--.search-login input {-->
+<!--    padding: 6px 10px;-->
+<!--}-->
+
+<!--.login {-->
+<!--    color: #007bff;-->
+<!--    text-decoration: none;-->
+<!--}-->
+
+<!--/* Controls */-->
+<!--.controls {-->
+<!--    display: flex;-->
+<!--    justify-content: flex-end;-->
+<!--    gap: 10px;-->
+<!--    margin-top: 15px;-->
+<!--}-->
+
+<!--select, button {-->
+<!--    padding: 6px 10px;-->
+<!--}-->
+
+<!--/* Blog Grid */-->
+<!--.container {-->
+<!--    padding: 30px 40px;-->
+<!--}-->
+
+<!--.posts-grid {-->
+<!--    display: grid;-->
+<!--    grid-template-columns: repeat(2, 1fr);-->
+<!--    gap: 30px 20px; /* vertical and horizontal spacing */-->
+<!--}-->
+
+<!--.post-card-link {-->
+<!--    text-decoration: none;-->
+<!--    color: inherit;-->
+<!--    display: block;-->
+<!--    height: 100%;-->
+<!--    transition: transform 0.2s, box-shadow 0.2s;-->
+<!--}-->
+
+<!--.post-card-link:hover {-->
+<!--    transform: scale(1.02);-->
+<!--    box-shadow: 0 4px 8px rgba(0,0,0,0.1);-->
+<!--}-->
+
+<!--.post-card {-->
+<!--    background: #ffffff;-->
+<!--    border: 1px solid #ccc;-->
+<!--    padding: 15px;-->
+<!--    display: flex;-->
+<!--    flex-direction: column;-->
+<!--    height: 150px; /* reduced height */-->
+<!--    box-sizing: border-box;-->
+<!--}-->
+
+<!--.post-card h3 {-->
+<!--    margin-top: 0;-->
+<!--    font-weight: bold;-->
+<!--    font-size: 18px;-->
+<!--    line-height: 1.2;-->
+<!--    margin-bottom: 8px;-->
+<!--}-->
+
+<!--.post-meta {-->
+<!--    font-size: 12px;-->
+<!--    color: #555;-->
+<!--    margin-bottom: 12px;-->
+<!--}-->
+
+<!--.post-card p {-->
+<!--    font-size: 14px;-->
+<!--    color: #333;-->
+<!--    flex-grow: 1; /* make excerpt fill space */-->
+<!--    margin-bottom: 0;-->
+<!--    overflow: hidden;-->
+<!--    display: -webkit-box;-->
+<!--    -webkit-line-clamp: 7; /* max 7 lines */-->
+<!--    -webkit-box-orient: vertical;-->
+<!--    line-height: 1.3;-->
+<!--}-->
+
+<!--/* Pagination */-->
+<!--.pagination {-->
+<!--    display: flex;-->
+<!--    justify-content: space-between;-->
+<!--    margin-top: 30px;-->
+<!--}-->
+
+<!--.pagination a {-->
+<!--    text-decoration: none;-->
+<!--    color: #555;-->
+<!--}-->
+
+<!--.new-post-btn {-->
+<!--    background-color: #28a745;-->
+<!--    color: #ffffff;-->
+<!--    padding: 8px 14px;-->
+<!--    border-radius: 4px;-->
+<!--    text-decoration: none;-->
+<!--    font-size: 14px;-->
+<!--    font-weight: bold;-->
+<!--}-->
+
+<!--.new-post-btn:hover {-->
+<!--    background-color: #218838;-->
+<!--}-->
+
+<!--/* Dropdowns */-->
+<!--.dropdown {-->
+<!--    position: relative;-->
+<!--    display: inline-block;-->
+<!--}-->
+
+<!--.dropdown-content {-->
+<!--    display: none;-->
+<!--    position: absolute;-->
+<!--    background: #fff;-->
+<!--    border: 1px solid #ccc;-->
+<!--    padding: 10px;-->
+<!--    z-index: 1;-->
+<!--    max-height: 200px;-->
+<!--    overflow-y: auto;-->
+<!--}-->
+
+<!--.dropdown:hover .dropdown-content {-->
+<!--    display: block;-->
+<!--}-->
+
+<!--.dropdown-content label {-->
+<!--    display: block;-->
+<!--    font-size: 14px;-->
+<!--}-->
+
+<!--.dropdown button {-->
+<!--    padding: 6px 10px;-->
+<!--    background: #fff;-->
+<!--    border: 1px solid #ccc;-->
+<!--    cursor: pointer;-->
+<!--}-->
+
+<!--.dropdown button:hover {-->
+<!--    background: #f1f1f1;-->
+<!--}-->
+
+<!--  </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--&lt;!&ndash; Header &ndash;&gt;-->
+<!--<div class="header">-->
+<!--    <div class="header-top">-->
+<!--        <h1>My Blog Application</h1>-->
+<!--        <div class="search-login">-->
+<!--            <form method="get" th:action="@{/dashboard}">-->
+<!--                <input type="text" name="search" placeholder="Search">-->
+<!--                <button type="submit">Search</button>-->
+<!--            </form>-->
+<!--            <a href="/register">Register</a>-->
+<!--            <a href="/login" class="login">Login</a>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div class="controls">-->
+<!--        <form method="get" th:action="@{/dashboard}">-->
+<!--            <input type="hidden" name="sort" th:value="${sort}" />-->
+
+<!--            &lt;!&ndash; Date Filter &ndash;&gt;-->
+<!--            <div class="dropdown">-->
+<!--                <button type="button">Filter by Date ⌄</button>-->
+<!--                <div class="dropdown-content">-->
+<!--                    <label><input type="radio" name="publishedDate" value="all" th:checked="${publishedDate == 'all'}"> All time</label>-->
+<!--                    <label><input type="radio" name="publishedDate" value="last1" th:checked="${publishedDate == 'last1'}"> Last 1 day</label>-->
+<!--                    <label><input type="radio" name="publishedDate" value="last7" th:checked="${publishedDate == 'last7'}"> Last 7 days</label>-->
+<!--                    <label><input type="radio" name="publishedDate" value="last30" th:checked="${publishedDate == 'last30'}"> Last 30 days</label>-->
+<!--                    <label><input type="radio" name="publishedDate" value="thisYear" th:checked="${publishedDate == 'thisYear'}"> This year</label>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Author Filter &ndash;&gt;-->
+<!--            <div class="dropdown">-->
+<!--                <button type="button">Filter by Author ⌄</button>-->
+<!--                <div class="dropdown-content">-->
+<!--                    <label th:each="author : ${allAuthors}">-->
+<!--                        <input type="checkbox" name="authors" th:value="${author}" th:checked="${selectedAuthors != null and selectedAuthors.contains(author)}">-->
+<!--                        <span th:text="${author}"></span>-->
+<!--                    </label>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Tag Filter &ndash;&gt;-->
+<!--            <div class="dropdown">-->
+<!--                <button type="button">Filter by Tags ⌄</button>-->
+<!--                <div class="dropdown-content">-->
+<!--                    <label th:each="tag : ${allTags}">-->
+<!--                        <input type="checkbox" name="tags" th:value="${tag.name}" th:checked="${selectedTags != null and selectedTags.contains(tag.name)}">-->
+<!--                        <span th:text="${tag.name}"></span>-->
+<!--                    </label>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            <button type="submit">Apply Filters</button>-->
+<!--        </form>-->
+
+<!--        &lt;!&ndash; Sorting &ndash;&gt;-->
+<!--        <form method="get" th:action="@{/dashboard}">-->
+<!--            <input type="hidden" name="page" value="0">-->
+<!--            <input type="hidden" name="search" th:value="${search}">-->
+<!--            <input type="hidden" name="publishedDate" th:value="${publishedDate}">-->
+
+<!--            <th:block th:each="author : ${selectedAuthors}">-->
+<!--                <input type="hidden" name="authors" th:value="${author}">-->
+<!--            </th:block>-->
+
+<!--            <th:block th:each="tag : ${selectedTags}">-->
+<!--                <input type="hidden" name="tags" th:value="${tag}">-->
+<!--            </th:block>-->
+
+<!--            <select name="sort" onchange="this.form.submit()">-->
+<!--                <option value="latest" th:selected="${sort == 'latest'}">Latest</option>-->
+<!--                <option value="oldest" th:selected="${sort == 'oldest'}">Oldest</option>-->
+<!--            </select>-->
+<!--        </form>-->
+
+<!--    </div>-->
+<!--</div>-->
+
+<!--<div style="padding: 20px 40px; text-align: right;">-->
+<!--    <a th:href="@{/newpost}" class="new-post-btn">+ Create New Post</a>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Blog Posts &ndash;&gt;-->
+<!--<div class="container">-->
+<!--    <div class="posts-grid">-->
+<!--        <a th:each="post : ${posts}" th:href="@{'/posts/' + ${post.id}}" class="post-card-link">-->
+<!--            <div class="post-card">-->
+<!--                <h3 th:text="${post.title}">Title</h3>-->
+<!--                <div class="post-meta">-->
+<!--                    <span th:text="${post.author}">Author</span>,-->
+<!--                    <span th:text="${#temporals.format(post.publishedAt, 'dd/MM/yyyy')}">18/08/2020</span>-->
+<!--                </div>-->
+<!--                <p th:text="${post.excerpt}">Lorem ipsum dolor sit amet...</p>-->
+<!--                <div class="post-tags" style="margin-top: 10px;">-->
+<!--                    <span th:each="tag : ${post.tags}"-->
+<!--                          style="display: inline-block; background: #e0e0e0; color: #333; padding: 3px 8px; margin-right: 6px; border-radius: 12px; font-size: 12px;">-->
+
+<!--                        <span th:text="${tag.name}">TagName</span>-->
+<!--                    </span>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </a>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; Pagination &ndash;&gt;-->
+<!--    <div class="pagination">-->
+<!--        <a th:if="${currentPage > 0}" th:href="@{/dashboard(page=${currentPage - 1})}">&#60; Previous</a>-->
+<!--        <a th:if="${currentPage + 1 < totalPages}" th:href="@{/dashboard(page=${currentPage + 1})}">Next &#62;</a>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--</body>-->
+<!--</html>-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <title>My Blog Application</title>
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #fafafa;
+            color: #111;
+        }
+
+        /* ========== HEADER ========== */
+        .header {
+            padding: 28px 48px;
+            background: #fff;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin: 0;
+        }
+
+        .search-login {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 14px;
+        }
+
+        .search-login input {
+            padding: 6px 10px;
+            border: 1px solid #ccc;
+            background: #fff;
+            color: #111;
+        }
+
+        .search-login button {
+            background: #111;
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+        }
+
+        .login {
+            color: #111;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* ========== CONTROLS ========== */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        select, button {
+            background: #fff;
+            color: #111;
+            border: 1px solid #ccc;
+            padding: 6px 10px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* ========== DROPDOWNS ========== */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 12px;
+            z-index: 10;
+            max-height: 220px;
+            overflow-y: auto;
+            min-width: 200px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+
+        /* ========== CREATE POST ========== */
+        .new-post-btn {
+            background: #111;
+            color: #fff;
+            padding: 10px 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .new-post-btn:hover {
+            background: #000;
+        }
+
+        /* ========== POSTS ========== */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+.posts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 48px;
+    row-gap: 40px;   /* 👈 THIS FIXES IT */
+    align-items: stretch;
+}
+
+
+
+
+        .post-card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+ .post-card {
+    background: #fff;
+    padding: 28px;
+    height: 160px;              /* 👈 FIXED HEIGHT */
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+
+    box-shadow: 0 10px 24px rgba(0,0,0,0.06);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+
+
+
+      .post-card h3 {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 8px;
+    line-height: 1.3;
+    letter-spacing: -0.3px;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;   /* SAME title height */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+
+        .post-meta {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 14px;
+}
+.post-tags {
+    margin-top: auto;
+    padding-top: 12px;
+}
+.post-card h3 {
+    transition: opacity 0.2s ease;
+}
+
+.post-card-link:hover h3 {
+    opacity: 0.85;
+}
+
+
+        .post-card p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #222;
+    margin: 0 0 14px;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 4;   /* SAME excerpt height */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+
+        .post-tags span {
+    display: inline-block;
+    margin-right: 12px;
+    font-size: 13px;
+    color: #555;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+}
+
+.post-tags span::before {
+    content: "#";
+    margin-right: 2px;
+    color: #999;
+}
+.post-card-link:hover .post-card {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.12);
+}
+
+
+        /* ========== PAGINATION ========== */
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 48px;
+            font-size: 14px;
+        }
+
+   .pagination a {
+    text-decoration: none;
+    color: #111;
+    font-weight: 600;
+    font-size: 15px;
+
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background: #fff;
+
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.pagination a:hover {
+    background: #111;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.controls form button[type="submit"] {
+    background: #111;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    font-weight: 400;
+
+
+
+    </style>
+
+</head>
+
+<body>
+
+<!-- ========== HEADER ========== -->
+<div class="header">
+    <div class="header-top">
+        <h1>My Blog Application</h1>
+
+        <div class="search-login">
+            <form method="get" th:action="@{/dashboard}">
+                <input type="text" name="search" placeholder="Search"
+                       th:value="${search}">
+                <button type="submit">Search</button>
+            </form>
+
+            <!-- Authenticated -->
+            <span sec:authorize="isAuthenticated()">
+                Welcome, <b sec:authentication="name"></b> |
+                <form th:action="@{/logout}" method="post" style="display:inline;">
+                    <button type="submit"
+                            style="background:none;border:none;color: #111; font-weight: 500;;">
+                        Logout
+                    </button>
+                </form>
+            </span>
+
+            <!-- Guest -->
+            <span sec:authorize="!isAuthenticated()">
+                <a href="/login" class="login">Login</a> |
+                <a href="/register" class="login">Register</a>
+            </span>
+        </div>
+    </div>
+
+    <!-- ========== FILTERS & SORT ========== -->
+    <div class="controls">
+        <form method="get" th:action="@{/dashboard}">
+            <input type="hidden" name="page" value="0"/>
+
+            <div class="dropdown">
+                <button type="button">Filter by Date ⌄</button>
+                <div class="dropdown-content">
+                    <label><input type="radio" name="publishedDate" value="all"> All time</label>
+                    <label><input type="radio" name="publishedDate" value="last1"> Last 1 day</label>
+                    <label><input type="radio" name="publishedDate" value="last7"> Last 7 days</label>
+                    <label><input type="radio" name="publishedDate" value="last30"> Last 30 days</label>
+                    <label><input type="radio" name="publishedDate" value="thisYear"> This year</label>
+                </div>
+            </div>
+
+            <div class="dropdown">
+                <button type="button">Filter by Author ⌄</button>
+                <div class="dropdown-content">
+                    <label th:each="author : ${allAuthors}">
+                        <input type="checkbox" name="authors"
+                               th:value="${author}"
+                               th:checked="${selectedAuthors != null and selectedAuthors.contains(author)}">
+                        <span th:text="${author}"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="dropdown">
+                <button type="button">Filter by Tags ⌄</button>
+                <div class="dropdown-content">
+                    <label th:each="tag : ${allTags}">
+                        <input type="checkbox" name="tags"
+                               th:value="${tag.name}"
+                               th:checked="${selectedTags != null and selectedTags.contains(tag.name)}">
+                        <span th:text="${tag.name}"></span>
+                    </label>
+                </div>
+            </div>
+
+<!--            <select name="sort">-->
+<!--                <option value="latest" th:selected="${sort == 'latest'}">Latest</option>-->
+<!--                <option value="oldest" th:selected="${sort == 'oldest'}">Oldest</option>-->
+<!--            </select>-->
+
+            <button type="submit">Apply</button>
+        </form>
+
+                 <form method="get" th:action="@{/dashboard}">
+                        <input type="hidden" name="page" value="0">
+                        <input type="hidden" name="search" th:value="${search}">
+                        <input type="hidden" name="publishedDate" th:value="${publishedDate}">
+
+                        <th:block th:each="author : ${selectedAuthors}">
+                            <input type="hidden" name="authors" th:value="${author}">
+                        </th:block>
+
+                        <th:block th:each="tag : ${selectedTags}">
+                            <input type="hidden" name="tags" th:value="${tag}">
+                        </th:block>
+
+                        <select name="sort" onchange="this.form.submit()">
+                            <option value="latest" th:selected="${sort == 'latest'}">Latest</option>
+                            <option value="oldest" th:selected="${sort == 'oldest'}">Oldest</option>
+                        </select>
+                    </form>
+    </div>
+</div>
+
+<!-- ========== CREATE POST ========== -->
+<div style="padding: 20px 40px; text-align: right;"
+     sec:authorize="isAuthenticated()">
+    <a th:href="@{/newpost}" class="new-post-btn">
+        + Create New Post
+    </a>
+</div>
+
+<!-- ========== POSTS ========== -->
+<div class="container">
+    <div class="posts-grid">
+        <a th:each="post : ${posts}"
+           th:href="@{'/posts/' + ${post.id}}"
+           class="post-card-link">
+            <div class="post-card">
+                <h3 th:text="${post.title}"></h3>
+                <div class="post-meta">
+                    <span th:text="${post.author}"></span>,
+                    <span th:text="${#temporals.format(post.publishedAt, 'dd/MM/yyyy')}"></span>
+                </div>
+                <p th:text="${post.excerpt}"></p>
+
+                <div class="post-tags">
+                    <span th:each="tag : ${post.tags}">
+                        <span th:text="${tag.name}"></span>
+                    </span>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+        <a th:if="${currentPage > 0}"
+           th:href="@{/dashboard(page=${currentPage - 1})}">
+            &lt; Previous
+        </a>
+        <a th:if="${currentPage + 1 < totalPages}"
+           th:href="@{/dashboard(page=${currentPage + 1})}">
+            Next &gt;
+        </a>
+    </div>
+</div>
+
+</body>
+</html>
